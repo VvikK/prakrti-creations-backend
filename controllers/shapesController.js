@@ -1,4 +1,4 @@
-const Shape = require('../models/shape');
+const Shape = require('../models/Shape');
 
 const asyncHandler = require('express-async-handler');
 const mongoose = require('mongoose');
