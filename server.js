@@ -32,6 +32,7 @@ app.use('/users', require('./routes/userRoutes'));
 app.use('/beads', require('./routes/beadRoutes'));
 app.use('/charms', require('./routes/charmRoutes'));
 app.use('/designs', require('./routes/designRoutes'));
+app.use('/shapes', require('./routes/shapeRoutes'));
 //---------------------------//
 
 app.all('*', (req, res) => {
