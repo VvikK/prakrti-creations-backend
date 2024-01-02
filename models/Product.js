@@ -10,6 +10,11 @@ const productSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    special_request: {
+        type: Boolean,
+        required: true,
+        default: false
+    },
     base_price: {
         type: Number,
         required: true
