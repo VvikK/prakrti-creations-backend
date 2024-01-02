@@ -6,6 +6,10 @@ const productSchema = new mongoose.Schema({
         required: true,
         default: false
     },
+    product_type: {
+        type: String,
+        required: true
+    },
     base_price: {
         type: Number,
         required: true
