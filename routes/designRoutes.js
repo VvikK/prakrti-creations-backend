@@ -8,6 +8,7 @@ router.route('/')
     .patch(designController.updateDesign)
     .delete(designController.deleteDesign);
 
-router.route('/:id');
+router.route('/:id')
+    .get(designController.getDesignById);
 
 module.exports = router;
