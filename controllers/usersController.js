@@ -25,6 +25,9 @@ const getAllUsers = asyncHandler(async (req, res) => {
 // @route   GET /user/:id
 // @access  Private
 const getUserById = asyncHandler(async (req, res) => {
+    // check if user id is valid
+    if (!isValidObjectId(req.params.id)) return res.status(400).json({ message: `No user with id ${req.params.id} found in DB` });
+
     // fetch the user from the database excluding their password
     const user = await User.findById(req.params.id).select('-password').lean();
 
