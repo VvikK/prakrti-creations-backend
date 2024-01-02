@@ -79,10 +79,10 @@ const updateDesign = asyncHandler(async (req, res) => {
     design.img_path = img_path;
     
     // send it to the DB
-    design = await design.save();
+    updatedDesign = await design.save();
 
     // log response and send it to the client
-    if (design) res.status(201).json({ message: `Design ${name} updated successfully` });
+    if (updatedDesign) res.status(201).json({ message: `Design ${name} updated successfully` });
     else res.status(500).json({ message: `Error: Design ${name} could not be updated` });
 });
 
@@ -102,7 +102,7 @@ const deleteDesign = asyncHandler(async (req, res) => {
     if (!design) return res.status(400).json({ message: `No design with id ${id} found in DB` });
 
     // delete the design
-    const deletedDesign = await design.remove();
+    const deletedDesign = await design.deleteOne();
 
     // log response and send it to the client
     if (deletedDesign) res.status(201).json({ message: `Design ${design.name} deleted successfully` });
