@@ -48,7 +48,7 @@ const createProduct = asyncHandler(async (req, res) => {
             img_path, charm_id, beads_id, design_id, shape_id } = req.body; // destructure the request body
 
     // check if data was sent
-    if (!is_template || !product_type || !special_request || !base_price || !color || !name || !description || !img_path) {
+    if (is_template===null || !product_type || special_request===null || base_price===null || !color || !name || !description || !img_path) {
         return res.status(400).json({ message: 'Please fill in all fields' });
     }
 
@@ -86,10 +86,10 @@ const createProduct = asyncHandler(async (req, res) => {
         name,
         description,
         img_path,
-        charm_id: charm_id ? charm_id : "N/A",
-        beads_id: beads_id ? beads_id : "N/A",
-        design_id: design_id ? design_id : "N/A",
-        shape_id: shape_id ? shape_id : "N/A"
+        charm_id: charm_id ? charm_id : null,
+        beads_id: beads_id ? beads_id : null,
+        design_id: design_id ? design_id : null,
+        shape_id: shape_id ? shape_id : null
     };
     const newProduct = await Product.create(productObject);
 
@@ -104,10 +104,11 @@ const createProduct = asyncHandler(async (req, res) => {
 // @access  Private/Admin
 const updateProduct = asyncHandler(async (req, res) => {
     const { id, is_template, product_type, special_request, base_price, color, name, description,
-            img_path, charm_id, beads_id, design_id, shape_id } = req.body; // destructure the request body
+            img_path } = req.body; // destructure the request body
+    let { charm_id, beads_id, design_id, shape_id } = req.body; // destructure the request body
 
     // check if data was sent
-    if (!id || !is_template || !product_type || !special_request || !base_price || !color || !name || !description || !img_path) {
+    if (!id || is_template===null || !product_type || special_request===null || base_price===null || !color || !name || !description || !img_path) {
         return res.status(400).json({ message: 'Please fill in all fields' });
     }
 
@@ -115,25 +116,29 @@ const updateProduct = asyncHandler(async (req, res) => {
     if (!isValidObjectId(id)) return res.status(400).json({ message: `No product with id ${id} found in DB` });
 
     // check if all special IDs are valid
-    if (charm_id && !isValidObjectId(charm_id)) return res.status(400).json({ message: `No charm with id ${charm_id} found in DB` });
-    if (beads_id && !isValidObjectId(beads_id)) return res.status(400).json({ message: `No bead with id ${beads_id} found in DB` });
-    if (design_id && !isValidObjectId(design_id)) return res.status(400).json({ message: `No design with id ${design_id} found in DB` });
-    if (shape_id && !isValidObjectId(shape_id)) return res.status(400).json({ message: `No shape with id ${shape_id} found in DB` });   
+    if (charm_id === "remove") charm_id = "r";
+    else if (charm_id && !isValidObjectId(charm_id)) return res.status(400).json({ message: `No charm with id ${charm_id} found in DB` });
+    if (beads_id === "remove") beads_id = "r";
+    else if (beads_id && !isValidObjectId(beads_id)) return res.status(400).json({ message: `No bead with id ${beads_id} found in DB` });
+    if (design_id === "remove") design_id = "r";
+    else if (design_id && !isValidObjectId(design_id)) return res.status(400).json({ message: `No design with id ${design_id} found in DB` });
+    if (shape_id === "remove") shape_id = "r";
+    else if (shape_id && !isValidObjectId(shape_id)) return res.status(400).json({ message: `No shape with id ${shape_id} found in DB` });   
 
     // check if special IDs are in DB
-    if (charm_id) {
+    if (charm_id && charm_id !== "r") {
         const charm = await Charm.findById(charm_id).exec();
         if (!charm) return res.status(400).json({ message: `No charm with id ${charm_id} found in DB` });
     }
-    if (beads_id) {
+    if (beads_id && beads_id !== "r") {
         const bead = await Bead.findById(beads_id).exec();
         if (!bead) return res.status(400).json({ message: `No bead with id ${beads_id} found in DB` });
     }
-    if (design_id) {
+    if (design_id && design_id !== "r") {
         const design = await Design.findById(design_id).exec();
         if (!design) return res.status(400).json({ message: `No design with id ${design_id} found in DB` });
     }
-    if (shape_id) {
+    if (shape_id && shape_id !== "r") {
         const shape = await Shape.findById(shape_id).exec();
         if (!shape) return res.status(400).json({ message: `No shape with id ${shape_id} found in DB` });
     }
@@ -151,10 +156,10 @@ const updateProduct = asyncHandler(async (req, res) => {
     product.name = name;
     product.description = description;
     product.img_path = img_path;
-    if (charm_id) product.charm_id = charm_id;
-    if (beads_id) product.beads_id = beads_id;
-    if (design_id) product.design_id = design_id;
-    if (shape_id) product.shape_id = shape_id;
+    (charm_id === "r") ? product.charm_id = null : (charm_id ? product.charm_id = charm_id : null);
+    (beads_id === "r") ? product.beads_id = null : (beads_id ? product.beads_id = beads_id : null);
+    (design_id === "r") ? product.design_id = null : (design_id ? product.design_id = design_id : null);
+    (shape_id === "r") ? product.shape_id = null : (shape_id ? product.shape_id = shape_id : null);
 
     // save the updated product object
     const updatedProduct = await product.save();
